@@ -2,11 +2,11 @@ import React from 'react';
 
 const StudentTable = () => {
   const students = [
-    { id: 1, name: 'Nikita Khatal', email: 'nikita@example.com', score: 92, status: 'Top Performer' },
-    { id: 2, name: 'Sakshi Hase', email: 'sakshi@example.com', score: 88, status: 'Active' },
-    { id: 3, name: 'Om Kanawade', email: 'omKanawade@gmail.com', score: 75, status: 'Active' },
-    { id: 4, name: 'Prashant Lamkhade', email: 'PrashantLamkhade@gmail.com', score: 64, status: 'Average' },
-    { id: 5, name: 'Rushikesh Patne', email: 'RJPatne@gmail.com', score: 59, status: 'Low Performer' },
+    { id: 1, name: 'Nikita Khatal', email: 'nikita@example.com' },
+    { id: 2, name: 'Sakshi Hase', email: 'sakshi@example.com' },
+    { id: 3, name: 'Om Kanawade', email: 'omKanawade@gmail.com' },
+    { id: 4, name: 'Prashant Lamkhade', email: 'PrashantLamkhade@gmail.com' },
+    { id: 5, name: 'Rushikesh Patne', email: 'RJPatne@gmail.com' },
   ];
   
   return (
@@ -19,8 +19,7 @@ const StudentTable = () => {
               <th className="py-3 px-4">ID</th>
               <th className="py-3 px-4">Name</th>
               <th className="py-3 px-4">Email</th>
-              <th className="py-3 px-4">Score (%)</th>
-              <th className="py-3 px-4">Status</th>
+            
             </tr>
           </thead>
           <tbody>
@@ -34,22 +33,7 @@ const StudentTable = () => {
                   <td className="py-2 px-4 text-gray-900 dark:text-gray-200">{student.id}</td>
                   <td className="py-2 px-4 text-gray-900 dark:text-gray-200">{student.name}</td>
                   <td className="py-2 px-4 text-gray-900 dark:text-gray-200">{student.email}</td>
-                  <td className="py-2 px-4 font-semibold text-gray-900 dark:text-gray-200">{student.score}%</td>
-                  <td className="py-2 px-4">
-                    <span
-                      className={`px-2 py-1 rounded-full text-sm font-medium ${
-                        student.status === 'Top Performer'
-                          ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
-                          : student.status === 'Active'
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100'
-                          : student.status === 'Average'
-                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
-                          : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
-                      }`}
-                    >
-                      {student.status}
-                    </span>
-                  </td>
+                 
                 </tr>
               );
             })}

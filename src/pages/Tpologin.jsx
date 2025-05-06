@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TPOLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // 👁️ toggle state
-  const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -15,18 +18,20 @@ const TPOLogin = () => {
     );
 
     if (!matchedTPO) {
-      setMessage('Invalid credentials.');
+      toast.error('Invalid credentials. Please try again.');
     } else if (matchedTPO.status !== 'approved') {
-      setMessage(`Access Denied. Status: ${matchedTPO.status}`);
+      toast.warning(`Access Denied.  your account Status is: ${matchedTPO.status}`);
     } else {
-      setMessage('Login successful!');
-      // You can redirect or store logged-in status here
+      toast.success(' Login successful! Redirecting...');
+      setTimeout(() => {
+        navigate('/dashboard'); // Change to your actual route
+      }, 2000); // Redirect after 2 seconds
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">TPO Login</h2>
+   <h2 className="text-2xl font-bold mb-6 text-center text-black">TPO Login</h2>
       <form onSubmit={handleLogin} className="space-y-4">
 
         <input
@@ -58,11 +63,17 @@ const TPOLogin = () => {
         <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
           Login
         </button>
+        <p className="text-center text-gray-600">
+          Don't have an account?{' '}
+          <a href="/register-tpo" className="text-blue-600 hover:underline">
+            Register here
+          </a>
+        </p>
 
-        {message && (
-          <p className="mt-4 text-center text-red-500">{message}</p>
-        )}
       </form>
+
+      {/* Toast container */}
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 };

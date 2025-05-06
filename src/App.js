@@ -9,6 +9,7 @@ import TPORegisterForm from './pages/register_top';
 import VerifyTpos from './pages/verify_tpo';
 import TPOLogin from './pages/Tpologin';
 import ManageTpos from './pages/manage_tpos';
+import ApprovedTPOList from './pages/approvedtpo';
 
 const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
   const location = useLocation();
@@ -19,10 +20,10 @@ const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
 
   return (
     <div className={`${themeMode} ${bgColor} ${textColor} min-h-screen flex flex-col`}>
-      {!isTpoRegister && <Header themeMode={themeMode} toggleTheme={toggleTheme} />}
+      {  <Header themeMode={themeMode} toggleTheme={toggleTheme} />}
 
       <div className="flex flex-col md:flex-row flex-1">
-        {!isTpoRegister && (
+        {  (
           <Sidebar
             themeMode={themeMode}
             sidebarOpen={sidebarOpen}
@@ -39,6 +40,7 @@ const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
             <Route path="/verify-tpo" element={<VerifyTpos />} />
             <Route path="/" element={<TPOLogin />} />
             <Route path="/manage" element={<ManageTpos />} />
+            <Route path='/approved-tpo' element={<ApprovedTPOList />} />
           </Routes>
         </div>
       </div>

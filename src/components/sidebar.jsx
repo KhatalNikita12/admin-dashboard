@@ -8,7 +8,8 @@ import {
   FaUsersCog,
   FaUserGraduate,
   FaDesktop,
-  FaCogs
+  FaCogs,
+  FaUserCircle
 } from 'react-icons/fa';
 
 const Sidebar = ({ themeMode, sidebarOpen, toggleSidebar }) => {
@@ -27,8 +28,10 @@ const Sidebar = ({ themeMode, sidebarOpen, toggleSidebar }) => {
     { label: 'Verify TPOs', icon: <FaUserCheck />, value: 'verify', path: '/verify-tpo' },
     { label: 'Manage TPOs', icon: <FaUsersCog />, value: 'manage', path: '/manage' },
     { label: 'View Students', icon: <FaUserGraduate />, value: 'view', path: '/student' },
+    { label: 'Approved Tpos', icon: <FaUserCircle />, value: 'approvedTpos', path: '/approved-tpo' },
     { label: 'System Monitoring', icon: <FaDesktop />, value: 'monitor', path: '/monitor' },
     { label: 'Control Panel', icon: <FaCogs />, value: 'control', path: '/control' }
+    
   ];
 
   return (

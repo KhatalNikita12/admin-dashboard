@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const ManageTpos = () => {
   const [tpos, setTpos] = useState([]);
   const [formData, setFormData] = useState({
@@ -42,6 +45,7 @@ const ManageTpos = () => {
   const handleDelete = (index) => {
     const updated = tpos.filter((_, i) => i !== index);
     updateLocalStorage(updated);
+    toast.warn('TPO deleted successfully!');
   };
 
   return (
@@ -65,13 +69,20 @@ const ManageTpos = () => {
             className="w-full border p-2 rounded bg-gray-100"
             placeholder="Email"
           />
-          <input
-            name="campus"
-            value={formData.campus}
-            onChange={e => setFormData({ ...formData, campus: e.target.value })}
-            className="w-full border p-2 rounded"
-            placeholder="Campus"
-          />
+       <select
+  name="campus"
+  className="w-full p-3 border rounded-lg text-black"
+  value={formData.campus}
+  onChange={e => setFormData({ ...formData, campus: e.target.value })}
+  required
+>
+  <option value="" disabled>Select Campus</option>
+  <option value="ICCS Universe">ICCS Universe</option>
+  <option value="ICCS Unity">ICCS Unity</option>
+  <option value="ICEM">ICEM</option>
+  <option value="Indira MBA">Indira MBA</option>
+</select>
+
           <select
             name="status"
             value={formData.status}
@@ -105,6 +116,8 @@ const ManageTpos = () => {
           ))
         )}
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
+
     </div>
   );
 };

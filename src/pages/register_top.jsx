@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TPORegistration = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +11,6 @@ const TPORegistration = () => {
     confirmPassword: '',
   });
 
-  const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -22,18 +23,26 @@ const TPORegistration = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      setMessage("Passwords do not match.");
+      toast.error("❌ Passwords do not match.");
       return;
     }
 
     const existingTPOs = JSON.parse(localStorage.getItem('tpos')) || [];
+
+    // Check for existing email
+    const alreadyRegistered = existingTPOs.some(tpo => tpo.email === formData.email);
+    if (alreadyRegistered) {
+      toast.warning("⚠️ Email already registered.");
+      return;
+    }
+
     const newTPO = {
       ...formData,
       status: 'pending',
     };
 
     localStorage.setItem('tpos', JSON.stringify([...existingTPOs, newTPO]));
-    setMessage("TPO registered successfully and awaiting admin approval.");
+    toast.success(" TPO registered successfully and awaiting admin approval.");
 
     setFormData({
       name: '',
@@ -46,13 +55,13 @@ const TPORegistration = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 rounded-xl shadow-lg bg-white">
-      <h2 className="text-2xl font-bold mb-6 text-center">TPO Registration</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-black">TPO Registration</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           name="name"
           placeholder="Full Name"
-          className="w-full p-3 border rounded-lg"
+          className="w-full p-3 border rounded-lg text-black placeholder-black"
           value={formData.name}
           onChange={handleChange}
           required
@@ -61,28 +70,32 @@ const TPORegistration = () => {
           type="email"
           name="email"
           placeholder="Email"
-          className="w-full p-3 border rounded-lg"
+          className="w-full p-3 border rounded-lg text-black placeholder-black"
           value={formData.email}
           onChange={handleChange}
           required
         />
-        <input
-          type="text"
+        <select
           name="campus"
-          placeholder="Campus"
-          className="w-full p-3 border rounded-lg"
+          className="w-full p-3 border rounded-lg text-black"
           value={formData.campus}
           onChange={handleChange}
           required
-        />
+        >
+          <option value="" disabled>Select Campus</option>
+          <option value="ICCS Universe">ICCS Universe</option>
+          <option value="ICCS Unity">ICCS Unity</option>
+          <option value="ICEM">ICEM</option>
+          <option value="Indira MBA">Indira MBA</option>
+        </select>
 
-        {/* Password Field with Show/Hide */}
+        {/* Password Field */}
         <div className="relative">
           <input
             type={showPassword ? 'text' : 'password'}
             name="password"
             placeholder="Password"
-            className="w-full p-3 border rounded-lg text-gray-700"
+            className="w-full p-3 border rounded-lg text-black placeholder-black"
             value={formData.password}
             onChange={handleChange}
             required
@@ -95,13 +108,13 @@ const TPORegistration = () => {
           </span>
         </div>
 
-        {/* Confirm Password Field with Show/Hide */}
+        {/* Confirm Password Field */}
         <div className="relative">
           <input
             type={showConfirmPassword ? 'text' : 'password'}
             name="confirmPassword"
             placeholder="Confirm Password"
-            className="w-full p-3 border rounded-lg text-gray-700"
+            className="w-full p-3 border rounded-lg text-black placeholder-black"
             value={formData.confirmPassword}
             onChange={handleChange}
             required
@@ -120,11 +133,16 @@ const TPORegistration = () => {
         >
           Register
         </button>
-
-        {message && (
-          <p className="mt-4 text-center text-green-600">{message}</p>
-        )}
+        <p className="text-center text-gray-600">
+          Already have an account?{' '}
+          <a href="/" className="text-blue-600 hover:underline">
+            Login here
+          </a>
+        </p>
       </form>
+
+      {/* Toast Notification Container */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
