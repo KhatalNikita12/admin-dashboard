@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,26 +8,40 @@ const TPOLogin = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+const handleLogin = (e) => {
+  e.preventDefault();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  // Admin login
+  if (email === 'admin@gmail.com' && password === 'admin123') {
+    toast.success('Admin login successful! Redirecting...');
+    localStorage.setItem('user', JSON.stringify({ email, role: 'admin' }));
 
-    const tpos = JSON.parse(localStorage.getItem('tpos')) || [];
-    const matchedTPO = tpos.find(
-      (tpo) => tpo.email === email && tpo.password === password
-    );
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 2000);
+    return;
+  }
 
-    if (!matchedTPO) {
-      toast.error('Invalid credentials. Please try again.');
-    } else if (matchedTPO.status !== 'approved') {
-      toast.warning(`Access Denied.  your account Status is: ${matchedTPO.status}`);
-    } else {
-      toast.success(' Login successful! Redirecting...');
-      setTimeout(() => {
-        navigate('/dashboard'); // Change to your actual route
-      }, 2000); // Redirect after 2 seconds
-    }
-  };
+  // TPO login
+  const tpos = JSON.parse(localStorage.getItem('tpos')) || [];
+  const matchedTPO = tpos.find(
+    (tpo) => tpo.email === email && tpo.password === password
+  );
+
+  if (!matchedTPO) {
+    toast.error('Invalid credentials. Please try again.');
+  } else if (matchedTPO.status !== 'approved') {
+    toast.warning(`Access Denied. Your account status is: ${matchedTPO.status}`);
+  } else {
+    toast.success('Login successful! Redirecting...');
+    localStorage.setItem('user', JSON.stringify({ email, role: 'tpo' }));
+
+    setTimeout(() => {
+      navigate('/tpo-dashboard');
+    }, 2000);
+  }
+};
+
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
@@ -65,9 +79,9 @@ const TPOLogin = () => {
         </button>
         <p className="text-center text-gray-600">
           Don't have an account?{' '}
-          <a href="/register-tpo" className="text-blue-600 hover:underline">
+          <Link to="/register-tpo" className="text-blue-600 hover:underline">
             Register here
-          </a>
+          </Link>
         </p>
 
       </form>

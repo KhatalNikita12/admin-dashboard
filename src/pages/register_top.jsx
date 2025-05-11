@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,6 +13,13 @@ const TPORegistration = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [registrationOpen, setRegistrationOpen] = useState(true);
+
+  useEffect(() => {
+    const systemSettings = JSON.parse(localStorage.getItem('systemSettings'));
+    const allowRegistrations = systemSettings?.allowRegistrations;
+    setRegistrationOpen(allowRegistrations !== false);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,6 +28,10 @@ const TPORegistration = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!registrationOpen) {
+      toast.error('🚫 Registration is currently closed.');
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("❌ Passwords do not match.");
@@ -28,34 +39,29 @@ const TPORegistration = () => {
     }
 
     const existingTPOs = JSON.parse(localStorage.getItem('tpos')) || [];
-
-    // Check for existing email
     const alreadyRegistered = existingTPOs.some(tpo => tpo.email === formData.email);
     if (alreadyRegistered) {
       toast.warning("⚠️ Email already registered.");
       return;
     }
 
-    const newTPO = {
-      ...formData,
-      status: 'pending',
-    };
-
+    const newTPO = { ...formData, status: 'pending' };
     localStorage.setItem('tpos', JSON.stringify([...existingTPOs, newTPO]));
-    toast.success(" TPO registered successfully and awaiting admin approval.");
 
-    setFormData({
-      name: '',
-      email: '',
-      campus: '',
-      password: '',
-      confirmPassword: '',
-    });
+    toast.success("✅ TPO registered successfully and awaiting admin approval.");
+    setFormData({ name: '', email: '', campus: '', password: '', confirmPassword: '' });
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 rounded-xl shadow-lg bg-white">
+      {registrationOpen ? null : (
+        <div className="mb-4 p-3 bg-red-100 text-red-800 font-semibold rounded">
+          🚫 Registration is closed now
+        </div>
+      )}
+
       <h2 className="text-2xl font-bold mb-6 text-center text-black">TPO Registration</h2>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -65,6 +71,7 @@ const TPORegistration = () => {
           value={formData.name}
           onChange={handleChange}
           required
+          disabled={!registrationOpen}
         />
         <input
           type="email"
@@ -74,6 +81,7 @@ const TPORegistration = () => {
           value={formData.email}
           onChange={handleChange}
           required
+          disabled={!registrationOpen}
         />
         <select
           name="campus"
@@ -81,6 +89,7 @@ const TPORegistration = () => {
           value={formData.campus}
           onChange={handleChange}
           required
+          disabled={!registrationOpen}
         >
           <option value="" disabled>Select Campus</option>
           <option value="ICCS Universe">ICCS Universe</option>
@@ -89,7 +98,7 @@ const TPORegistration = () => {
           <option value="Indira MBA">Indira MBA</option>
         </select>
 
-        {/* Password Field */}
+        {/* Password and Confirm Password Fields with toggle logic */}
         <div className="relative">
           <input
             type={showPassword ? 'text' : 'password'}
@@ -99,6 +108,7 @@ const TPORegistration = () => {
             value={formData.password}
             onChange={handleChange}
             required
+            disabled={!registrationOpen}
           />
           <span
             onClick={() => setShowPassword(!showPassword)}
@@ -108,7 +118,6 @@ const TPORegistration = () => {
           </span>
         </div>
 
-        {/* Confirm Password Field */}
         <div className="relative">
           <input
             type={showConfirmPassword ? 'text' : 'password'}
@@ -118,6 +127,7 @@ const TPORegistration = () => {
             value={formData.confirmPassword}
             onChange={handleChange}
             required
+            disabled={!registrationOpen}
           />
           <span
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -129,19 +139,18 @@ const TPORegistration = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+          disabled={!registrationOpen}
+          className={`w-full text-white py-3 rounded-lg ${registrationOpen ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}`}
         >
           Register
         </button>
+
         <p className="text-center text-gray-600">
           Already have an account?{' '}
-          <a href="/" className="text-blue-600 hover:underline">
-            Login here
-          </a>
+          <a href="/" className="text-blue-600 hover:underline">Login here</a>
         </p>
       </form>
 
-      {/* Toast Notification Container */}
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );

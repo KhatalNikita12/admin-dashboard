@@ -20,7 +20,7 @@ const Sidebar = ({ themeMode, sidebarOpen, toggleSidebar }) => {
     return null;
   }
 
-  const bgColor = themeMode === 'dark' ? 'bg-gray-800' : 'bg-white';
+  const bgColor = themeMode === 'dark' ? 'bg-gray-800' : 'bg-blue-200';
   const hoverBg = themeMode === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200';
 
   const menuItems = [
@@ -29,8 +29,8 @@ const Sidebar = ({ themeMode, sidebarOpen, toggleSidebar }) => {
     { label: 'Manage TPOs', icon: <FaUsersCog />, value: 'manage', path: '/manage' },
     { label: 'View Students', icon: <FaUserGraduate />, value: 'view', path: '/student' },
     { label: 'Approved Tpos', icon: <FaUserCircle />, value: 'approvedTpos', path: '/approved-tpo' },
-    { label: 'System Monitoring', icon: <FaDesktop />, value: 'monitor', path: '/monitor' },
-    { label: 'Control Panel', icon: <FaCogs />, value: 'control', path: '/control' }
+    // { label: 'System Monitoring', icon: <FaDesktop />, value: 'monitor', path: '/monitor' },
+    { label: 'Control Panel', icon: <FaCogs />, value: 'control', path: '/controlpanel' }
     
   ];
 
