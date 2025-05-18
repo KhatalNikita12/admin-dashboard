@@ -18,9 +18,10 @@ import TPOLogin from './pages/Tpologin';
 import ManageTpos from './pages/manage_tpos';
 import ApprovedTPOList from './pages/approvedtpo';
 import ControlPanel from './pages/controlpanel';
-import TpoDashboard from './pages/tpodashboard'; // Corrected component name
+import TpoDashboard from './pages/tpodashboard';
+import AdminLogin from './pages/adminlogin';
 
-// ✅ Role-based ProtectedRoute
+// ✅ Role-based Protected Route
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -39,6 +40,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
+// ✅ Main layout wrapper (handles Sidebar/Header visibility)
 const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
   const location = useLocation();
   const bgColor = themeMode === 'dark' ? 'bg-gray-900' : 'bg-gray-50';
@@ -47,12 +49,17 @@ const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
   const user = JSON.parse(localStorage.getItem('user'));
   const userRole = user?.role;
 
+  // Define public routes (no sidebar or header)
+  const publicRoutes = ['/', '/register-tpo', '/login-admin'];
+  const isPublic = publicRoutes.includes(location.pathname);
+
   return (
     <div className={`${themeMode} ${bgColor} ${textColor} min-h-screen flex flex-col`}>
-      <Header themeMode={themeMode} toggleTheme={toggleTheme} />
+      {!isPublic && <Header themeMode={themeMode} toggleTheme={toggleTheme} />}
 
       <div className="flex flex-col md:flex-row flex-1">
-        {userRole === 'admin' && (
+        {/* Sidebar only visible for admins */}
+        {userRole === 'admin' && !isPublic && (
           <Sidebar
             themeMode={themeMode}
             sidebarOpen={sidebarOpen}
@@ -61,12 +68,11 @@ const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
         )}
 
         <div className="flex-1 p-4 overflow-y-auto">
-         
-            {/* All your routes remain unchanged */}
-              <Routes>
+          <Routes>
             {/* Public Routes */}
             <Route path="/" element={<TPOLogin />} />
             <Route path="/register-tpo" element={<TPORegisterForm />} />
+            <Route path="/login-admin" element={<AdminLogin />} />
 
             {/* Admin Routes */}
             <Route
@@ -126,7 +132,7 @@ const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
               }
             />
 
-            {/* TPO-only Dashboard */}
+            {/* TPO Routes */}
             <Route
               path="/tpo-dashboard"
               element={
@@ -139,20 +145,19 @@ const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
             {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-      
         </div>
       </div>
     </div>
   );
 };
 
-
+// ✅ App entry component
 const App = () => {
-  // const [themeMode, setThemeMode] = useState('dark');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [themeMode, setThemeMode] = useState(
     localStorage.getItem('themeMode') || 'dark'
   );
+
   const toggleTheme = () => {
     setThemeMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
