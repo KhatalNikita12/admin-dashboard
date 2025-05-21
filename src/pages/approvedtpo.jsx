@@ -2,12 +2,35 @@ import React, { useEffect, useState } from 'react';
 
 const ApprovedTPOList = () => {
   const [approvedTPOs, setApprovedTPOs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const storedTPOs = JSON.parse(localStorage.getItem('tpos')) || [];
-    const approved = storedTPOs.filter(tpo => tpo.status === 'approved');
-    setApprovedTPOs(approved);
+    // Fetch approved TPOs from backend API
+    fetch('http://localhost:5001/api/auth/tpo/approved')  // Change the URL as per your backend server
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch approved TPOs');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setApprovedTPOs(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return <p className="text-center mt-10">Loading approved TPOs...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center mt-10 text-red-500">{error}</p>;
+  }
 
   return (
     <div className="max-w-5xl mx-auto mt-10 p-6 rounded-xl shadow-lg bg-white">

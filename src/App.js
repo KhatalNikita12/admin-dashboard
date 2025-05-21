@@ -23,9 +23,13 @@ import AdminLogin from './pages/adminlogin';
 
 // ✅ Role-based Protected Route
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const userStr = localStorage.getItem('user');
+  if (!userStr) return <Navigate to="/" />;
 
-  if (!user) {
+  let user;
+  try {
+    user = JSON.parse(userStr);
+  } catch (e) {
     return <Navigate to="/" />;
   }
 
@@ -46,19 +50,23 @@ const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
   const bgColor = themeMode === 'dark' ? 'bg-gray-900' : 'bg-gray-50';
   const textColor = themeMode === 'dark' ? 'text-white' : 'text-gray-800';
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
   const userRole = user?.role;
 
-  // Define public routes (no sidebar or header)
   const publicRoutes = ['/', '/register-tpo', '/login-admin'];
   const isPublic = publicRoutes.includes(location.pathname);
+
+  // ✅ Redirect to login if user is not present and not on public route
+  if (!user && !isPublic) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className={`${themeMode} ${bgColor} ${textColor} min-h-screen flex flex-col`}>
       {!isPublic && <Header themeMode={themeMode} toggleTheme={toggleTheme} />}
 
       <div className="flex flex-col md:flex-row flex-1">
-        {/* Sidebar only visible for admins */}
         {userRole === 'admin' && !isPublic && (
           <Sidebar
             themeMode={themeMode}
@@ -160,6 +168,7 @@ const App = () => {
 
   const toggleTheme = () => {
     setThemeMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    localStorage.setItem('themeMode', themeMode === 'dark' ? 'light' : 'dark');
   };
 
   const toggleSidebar = () => {

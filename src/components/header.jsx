@@ -1,14 +1,40 @@
 import React from 'react';
 
 const Header = ({ themeMode, toggleTheme }) => {
-  const handleLogout = () => {
-    // Clear relevant user data from localStorage
-    localStorage.removeItem("loggedInUser");
-    localStorage.removeItem("tpo");
-    localStorage.removeItem("admin");
-    localStorage.removeItem("student");
-    localStorage.removeItem("token"); // if any
-    window.location.href = "/"; // Redirect to login or home page
+  const handleLogout = async () => {
+     localStorage.removeItem("loggedInUser");
+  localStorage.removeItem("tpo");
+  localStorage.removeItem("admin");
+  localStorage.removeItem("student");
+  localStorage.removeItem("token");
+  localStorage.removeItem("user"); // ✅ Important for route protection
+
+  window.location.href = "/";
+    try {
+      const token = localStorage.getItem("token");
+
+      // Optional: Call backend logout endpoint
+      await fetch("http://localhost:5001/api/auth/tpo/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      });
+
+      // Clear user-related data from localStorage
+      localStorage.removeItem("loggedInUser");
+      localStorage.removeItem("tpo");
+      localStorage.removeItem("admin");
+      localStorage.removeItem("student");
+      localStorage.removeItem("token");
+
+      // Redirect to login/home page
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Logout failed. Please try again.");
+    }
   };
 
   return (
@@ -35,15 +61,15 @@ const Header = ({ themeMode, toggleTheme }) => {
           >
             {themeMode === 'dark' ? '🌞 Light Mode' : '🌙 Dark Mode'}
           </button>
-{/* logout Button */}
-        <button
-  type="button"  // ✅ Prevents form submit
-  onClick={handleLogout}
-  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
->
-  Logout
-</button>
 
+          {/* Logout Button */}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+          >
+            Logout
+          </button>
         </div>
       </div>
     </header>
