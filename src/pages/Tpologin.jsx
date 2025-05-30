@@ -17,8 +17,18 @@ const TPOLogin = () => {
         "http://localhost:5001/api/auth/tpo/login",
         { collegeEmail, password }
       );
-      const { token, message } = res.data;
 
+      const { token, message, status } = res.data;
+
+      // If status is pending or rejected (token is null), show warning
+      if (!token) {
+        toast.warning(message, {
+          style: { background: "#ffc107", color: "#000" }
+        });
+        return;
+      }
+
+      // Success case (approved)
       toast.success(message, {
         style: { background: "#28a745", color: "#fff" }
       });
@@ -26,13 +36,13 @@ const TPOLogin = () => {
       localStorage.setItem("jwt", token);
       localStorage.setItem(
         "user",
-        JSON.stringify({ email: collegeEmail, role: "tpo" })
+        JSON.stringify({ email: collegeEmail, role: "tpo", status })
       );
 
       setTimeout(() => navigate("/tpo-dashboard"), 1500);
     } catch (err) {
       const status = err.response?.status;
-      const dataMsg = err.response?.data?.message || "Something went wrong";
+      const dataMsg = err.response?.data?.message || "Your account is not active yet";
 
       if (status === 403) {
         toast.warning(dataMsg, {

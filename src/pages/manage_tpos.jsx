@@ -41,7 +41,7 @@ const ManageTpos = () => {
       id: tpo.id,
       name: tpo.name,
       collegeEmail: tpo.collegeEmail,
-      campus: tpo.campus,
+      campus: tpo.campus?.campusName || '', // Use campusName string here
       status: tpo.status,
     });
     setEditingIndex(idx);
@@ -58,7 +58,7 @@ const ManageTpos = () => {
       .then(() =>
         axios.patch(`http://localhost:5001/api/auth/tpo/${id}`, {
           name,
-          campus,
+          campus, // send campus as string (campusName)
         })
       )
       .then(() => {
@@ -89,9 +89,7 @@ const ManageTpos = () => {
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-lg">
-      <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">
-        Manage TPOs
-      </h2>
+      <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">Manage TPOs</h2>
 
       {editingIndex !== null && (
         <form
@@ -132,7 +130,6 @@ const ManageTpos = () => {
           >
             <option value="">Select Status</option>
             <option value="approved">Approved</option>
-            {/* <option value="pending">Pending</option> */}
             <option value="rejected">Rejected</option>
           </select>
           <div className="flex gap-2">
@@ -170,7 +167,7 @@ const ManageTpos = () => {
                 </div>
                 <div>
                   <p className="text-gray-600">
-                    <strong>Campus:</strong> {tpo.campus}
+                    <strong>Campus:</strong> {tpo.campus?.campusName || ''}
                   </p>
                   <p className="text-gray-600">
                     <strong>Status:</strong> {tpo.status}

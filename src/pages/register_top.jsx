@@ -16,6 +16,8 @@ const TPORegistration = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [registrationOpen, setRegistrationOpen] = useState(true);
+   const [campusId, setCampusId] = useState('');
+    const [campuses, setCampuses] = useState([]);
   const API = 'http://localhost:5001';
 
   // 1) fetch flags from backend
@@ -33,6 +35,20 @@ const TPORegistration = () => {
       }
     })();
   }, []);
+useEffect(() => {
+  (async () => {
+    try {
+      const res = await fetch(`http://localhost:5001/api/admin/campus/all
+`);
+      if (!res.ok) throw new Error('Failed to load campuses');
+      const data = await res.json();
+      setCampuses(data);
+    } catch (err) {
+      console.error(err);
+      toast.error('❌ Unable to load campus list.');
+    }
+  })();
+}, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,19 +67,20 @@ const TPORegistration = () => {
     }
 
     try {
-      const res = await fetch(`${API}/api/auth/tpo/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          idNumber: formData.idNumber,
-          designation: formData.designation,
-          campus: formData.campus,
-          phone: formData.phone,
-          collegeEmail: formData.collegeEmail,
-          password: formData.password,
-        }),
-      });
+   const res = await fetch(`${API}/api/auth/tpo/register`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: formData.name,
+    idNumber: formData.idNumber,
+    designation: formData.designation,
+    campusId: campusId,        // <-- Fix is here
+    phone: formData.phone,
+    collegeEmail: formData.collegeEmail,
+    password: formData.password,
+  }),
+});
+
 
       if (res.status === 403) {
         const text = await res.text();
@@ -123,19 +140,18 @@ const TPORegistration = () => {
           />
         ))}
 
-        <select
-          name="campus"
-          className="w-full p-3 border rounded-lg text-black"
-          value={formData.campus}
-          onChange={handleChange}
+       <select
+          value={campusId}
+          onChange={(e) => setCampusId(e.target.value)}
+          className="w-full p-2 border rounded text-black placeholder-gray-500"
           required
-          disabled={!registrationOpen}
         >
-          <option value="" disabled>Select Campus</option>
-          <option value="ICCS Universe">ICCS Universe</option>
-          <option value="ICCS Unity">ICCS Unity</option>
-          <option value="ICEM">ICEM</option>
-          <option value="Indira MBA">Indira MBA</option>
+          <option value="">Select Campus</option>
+          {campuses.map(campus => (
+            <option key={campus.campusId} value={campus.campusId}>
+              {campus.campusName}
+            </option>
+          ))}
         </select>
 
         <div className="relative">

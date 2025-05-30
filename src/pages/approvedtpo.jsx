@@ -42,7 +42,10 @@ const ApprovedTPOList = () => {
         approvedTPOs.map((tpo, index) => (
           <div key={index} className="mb-8 border border-gray-300 rounded-lg p-4 shadow-sm">
             <h3 className="text-xl font-semibold text-blue-700">{tpo.name}</h3>
-            <p className="text-sm text-gray-600 mb-2">{tpo.email} | {tpo.campus}</p>
+          <p className="text-sm text-gray-600 mb-2">
+  {tpo.email} | {tpo.campus?.campusName} - {tpo.campus?.place}
+</p>
+
 
             <h4 className="text-md font-semibold mt-4 text-gray-800 underline">Placement Coordinators:</h4>
 

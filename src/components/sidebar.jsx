@@ -9,7 +9,9 @@ import {
   FaUserGraduate,
   FaDesktop,
   FaCogs,
-  FaUserCircle
+  FaUserCircle,
+  FaSchool,
+  FaStream
 } from 'react-icons/fa';
 
 const Sidebar = ({ themeMode, sidebarOpen, toggleSidebar }) => {
@@ -30,8 +32,9 @@ const Sidebar = ({ themeMode, sidebarOpen, toggleSidebar }) => {
     { label: 'View Students', icon: <FaUserGraduate />, value: 'view', path: '/student' },
     { label: 'Approved Tpos', icon: <FaUserCircle />, value: 'approvedTpos', path: '/approved-tpo' },
     // { label: 'System Monitoring', icon: <FaDesktop />, value: 'monitor', path: '/monitor' },
+    { label: 'Campus', icon: <FaSchool />, value: 'campus', path: '/campus' },
+    { label: 'Stream', icon: <FaStream />, value: 'stream', path: '/stream' },
     { label: 'Control Panel', icon: <FaCogs />, value: 'control', path: '/controlpanel' }
-    
   ];
 
   return (

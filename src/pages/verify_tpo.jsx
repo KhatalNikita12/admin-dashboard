@@ -12,7 +12,7 @@ const VerifyTpos = () => {
       .then((res) => {
         setTpos(res.data || []);
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error('Failed to fetch TPOs');
       });
   }, []);
@@ -49,7 +49,7 @@ const VerifyTpos = () => {
               <strong>Email:</strong> {tpo.collegeEmail}
             </p>
             <p>
-              <strong>Campus:</strong> {tpo.campus}
+              <strong>Campus:</strong> {tpo.campus?.campusName || 'N/A'}
             </p>
             <p>
               <strong>Status:</strong>{' '}
@@ -72,6 +72,10 @@ const VerifyTpos = () => {
           </div>
         ))
       )}
+
+      <p className="text-center text-gray-500 mt-6">
+        Total Pending TPOs: {tpos.length}
+      </p>
     </div>
   );
 };

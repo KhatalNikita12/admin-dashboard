@@ -20,6 +20,8 @@ import ApprovedTPOList from './pages/approvedtpo';
 import ControlPanel from './pages/controlpanel';
 import TpoDashboard from './pages/tpodashboard';
 import AdminLogin from './pages/adminlogin';
+import CampusManager from './pages/campusmanage';
+import StreamManager from './pages/StreamManager';
 
 // ✅ Role-based Protected Route
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -144,12 +146,28 @@ const MainLayout = ({ themeMode, toggleTheme, sidebarOpen, toggleSidebar }) => {
             <Route
               path="/tpo-dashboard"
               element={
-                <ProtectedRoute allowedRoles={['tpo']}>
+                <ProtectedRoute allowedRoles={['tpo','admin']}>
                   <TpoDashboard />
                 </ProtectedRoute>
               }
             />
-
+          {/* campus routes */}
+            <Route
+              path="/campus"
+              element={
+                <ProtectedRoute allowedRoles={['tpo','admin']}>
+              <CampusManager/>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/stream"
+              element={
+                <ProtectedRoute allowedRoles={['tpo','admin']}>
+              <StreamManager/>
+                </ProtectedRoute>
+              }
+            />
             {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
